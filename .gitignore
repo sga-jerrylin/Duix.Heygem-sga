@@ -4,3 +4,7 @@ out
 .idea
 .DS_Store
 *.log*
+
+# IndexTTS adapter
+index-tts-adapter/index-tts/
+deploy/docker-images/
