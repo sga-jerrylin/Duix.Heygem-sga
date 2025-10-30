@@ -56,9 +56,9 @@ RUN mkdir -p checkpoints && \
     echo "模型文件下载完成" && \
     cd ..
 
-# 使用 uv 安装 index-tts 依赖（跳过 deepspeed，不是必需的）
+# 使用 uv 安装 index-tts 依赖（不安装额外组，避免 deepspeed 编译问题）
 RUN echo "正在安装 index-tts 依赖..." && \
-    uv sync --no-group deepspeed && \
+    uv sync && \
     echo "index-tts 依赖安装完成"
 
 # 复制适配器代码到 /code
