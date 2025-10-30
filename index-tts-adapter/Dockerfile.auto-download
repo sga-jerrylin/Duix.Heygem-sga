@@ -54,18 +54,20 @@ RUN echo "正在下载模型文件..." && \
     echo "模型文件下载完成" && \
     cd ..
 
-# 使用 uv 安装依赖
-RUN echo "正在安装 index-tts 依赖..." && \
-    uv sync --all-extras && \
-    echo "index-tts 依赖安装完成"
-
-# 复制适配器代码
+# 复制适配器代码（在安装 index-tts 依赖之前）
 WORKDIR /code
 COPY api_server.py /code/api_server.py
 COPY requirements.txt /code/requirements.txt
 
-# 在 index-tts 目录中使用 uv 安装适配器依赖
+# 回到 index-tts 目录安装依赖
 WORKDIR /code/index-tts
+
+# 使用 uv 安装 index-tts 依赖
+RUN echo "正在安装 index-tts 依赖..." && \
+    uv sync --all-extras && \
+    echo "index-tts 依赖安装完成"
+
+# 安装适配器依赖
 RUN echo "正在安装适配器依赖..." && \
     uv pip install -r /code/requirements.txt && \
     echo "适配器依赖安装完成"
