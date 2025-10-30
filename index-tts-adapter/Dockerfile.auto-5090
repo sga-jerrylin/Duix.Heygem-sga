@@ -16,16 +16,16 @@ ENV TORCH_CUDA_ARCH_LIST="9.0"
 RUN sed -i 's@//.*archive.ubuntu.com@//mirrors.tuna.tsinghua.edu.cn@g' /etc/apt/sources.list && \
     sed -i 's@//.*security.ubuntu.com@//mirrors.tuna.tsinghua.edu.cn@g' /etc/apt/sources.list
 
-# 安装系统依赖（添加重试机制）
+# 安装系统依赖（只安装必需的包，跳过 ffmpeg）
 RUN apt-get update && \
-    apt-get install -y --fix-missing \
+    apt-get install -y --no-install-recommends \
     python3.10 \
     python3-pip \
+    python3-dev \
     git \
     git-lfs \
     wget \
     curl \
-    ffmpeg \
     libsndfile1 \
     && rm -rf /var/lib/apt/lists/*
 
