@@ -1,6 +1,6 @@
 # IndexTTS Adapter Dockerfile for RTX 40 Series (4090, 4080, etc.)
 # 针对 RTX 40 系列显卡优化
-# 使用本地 index-tts 目录，避免网络问题
+# 使用本地 index-tts 目录，模型内置在镜像中
 
 FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
 
@@ -30,7 +30,7 @@ WORKDIR /code
 RUN pip3 install -U uv
 
 # 复制本地的 index-tts 目录（包含代码和模型）
-# 注意：构建前需要先准备好 index-tts 目录
+# 重要：构建前必须准备好完整的 index-tts 目录（包含 checkpoints 模型文件）
 COPY index-tts /code/index-tts
 
 # 复制适配器代码
@@ -51,6 +51,13 @@ RUN uv pip install -r /code/requirements.txt
 
 # 创建数据目录
 RUN mkdir -p /code/data
+
+# 验证模型文件是否存在
+RUN if [ ! -f "/code/index-tts/checkpoints/config.yaml" ]; then \
+        echo "错误：未找到模型文件！请确保 index-tts/checkpoints 目录包含模型文件"; \
+        exit 1; \
+    fi && \
+    echo "✓ 模型文件验证成功"
 
 # 暴露端口
 EXPOSE 8080
