@@ -24,16 +24,20 @@ git lfs pull
 # 4. 下载模型文件（约 2-3GB）
 pip install -U "huggingface-hub[cli]"
 
-# 使用国内镜像（推荐）
-export HF_ENDPOINT=https://hf-mirror.com  # Linux/Mac
-# 或
-set HF_ENDPOINT=https://hf-mirror.com     # Windows
+# 方式 A：使用下载脚本（推荐，有进度显示）
+python download_model.py
 
-# 下载模型（使用 Python 模块方式，避免 PATH 问题）
-python -m huggingface_hub download IndexTeam/IndexTTS-2 --local-dir=checkpoints
+# 方式 B：使用命令行
+# Windows:
+set HF_ENDPOINT=https://hf-mirror.com
+python -m huggingface_hub download IndexTeam/IndexTTS-2 --local-dir=checkpoints --local-dir-use-symlinks=False
 
-# 如果上面的命令不工作，也可以尝试：
-# huggingface-cli download IndexTeam/IndexTTS-2 --local-dir=checkpoints
+# Linux/Mac:
+export HF_ENDPOINT=https://hf-mirror.com
+python -m huggingface_hub download IndexTeam/IndexTTS-2 --local-dir=checkpoints --local-dir-use-symlinks=False
+
+# 方式 C：使用 Git 克隆（如果上面的方式不工作）
+git clone https://hf-mirror.com/IndexTeam/IndexTTS-2 checkpoints
 
 # 5. 返回上级目录
 cd ..
