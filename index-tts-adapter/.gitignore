@@ -1,0 +1,19 @@
+# IndexTTS 目录（需要用户自行准备，不提交到 git）
+index-tts/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# 临时文件
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+

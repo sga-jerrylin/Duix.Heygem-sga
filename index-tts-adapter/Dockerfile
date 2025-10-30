@@ -1,5 +1,6 @@
 # IndexTTS Adapter Dockerfile for RTX 40 Series (4090, 4080, etc.)
 # 针对 RTX 40 系列显卡优化
+# 使用本地 index-tts 目录，避免网络问题
 
 FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
 
@@ -28,28 +29,24 @@ WORKDIR /code
 # 安装 uv 包管理器
 RUN pip3 install -U uv
 
-# 复制本地的 index-tts 代码（需要先手动下载）
+# 复制本地的 index-tts 目录（包含代码和模型）
+# 注意：构建前需要先准备好 index-tts 目录
 COPY index-tts /code/index-tts
 
-# 进入 index-tts 目录并安装依赖
-WORKDIR /code/index-tts
-RUN git lfs install --force && git lfs pull
-
-# 使用 uv 安装依赖
-RUN uv sync --all-extras
-
-# 下载模型（使用 HuggingFace 镜像）
-ENV HF_ENDPOINT=https://hf-mirror.com
-RUN uv tool install "huggingface-hub[cli,hf_xet]" && \
-    ~/.local/bin/hf download IndexTeam/IndexTTS-2 --local-dir=checkpoints
-
 # 复制适配器代码
-WORKDIR /code
 COPY api_server.py /code/api_server.py
 COPY requirements.txt /code/requirements.txt
 
-# 在 index-tts 目录中使用 uv 安装适配器依赖
+# 进入 index-tts 目录并安装依赖
 WORKDIR /code/index-tts
+
+# 确保 Git LFS 文件已拉取（如果有）
+RUN git lfs install --force 2>/dev/null || true
+
+# 使用 uv 安装 index-tts 依赖
+RUN uv sync --all-extras
+
+# 安装适配器依赖
 RUN uv pip install -r /code/requirements.txt
 
 # 创建数据目录

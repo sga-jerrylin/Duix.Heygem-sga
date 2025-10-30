@@ -16,47 +16,110 @@
 
 ## 🚀 快速开始
 
-### ⚠️ 重要：先确定你的显卡型号
+### ⚠️ 重要：部署前准备
 
-不同显卡需要使用不同的配置文件！
+#### 1. 确定你的显卡型号
 
 ```bash
 nvidia-smi
 ```
 
-- **RTX 50 系列**（5090, 5080）→ 使用 `docker-compose-indextts-5090.yml`
-- **RTX 40 系列**（4090, 4080, 4070）→ 使用 `docker-compose-indextts.yml`
-- **RTX 30 系列及更早**（3090, 3080）→ 使用 `docker-compose-indextts.yml`
+- **RTX 50 系列**（5090, 5080）→ 使用 5090 版本的脚本
+- **RTX 40 系列**（4090, 4080, 4070）→ 使用标准版本的脚本
+- **RTX 30 系列及更早**（3090, 3080）→ 使用标准版本的脚本
 
 📖 **详细指南**: [GPU_SELECTION_GUIDE.md](../GPU_SELECTION_GUIDE.md)
 
+#### 2. 准备 index-tts 目录（必须！）
+
+**在构建 Docker 镜像之前，必须先准备好 `index-tts` 目录。**
+
+##### 方式 A：在线下载（适合网络良好的环境）
+
+```bash
+# 进入 index-tts-adapter 目录
+cd index-tts-adapter
+
+# 克隆仓库
+git clone https://github.com/index-tts/index-tts.git
+cd index-tts
+git lfs install
+git lfs pull
+
+# 下载模型（约 2-3GB）
+pip install -U "huggingface-hub[cli]"
+export HF_ENDPOINT=https://hf-mirror.com  # 国内镜像
+huggingface-cli download IndexTeam/IndexTTS-2 --local-dir=checkpoints
+```
+
+##### 方式 B：离线部署（推荐，适合批量部署）
+
+1. 在一台有网络的机器上使用方式 A 准备好 `index-tts` 目录
+2. 打包整个 `index-tts-adapter` 目录：
+   ```bash
+   tar -czf index-tts-adapter.tar.gz index-tts-adapter/
+   ```
+3. 分发到其他机器并解压即可使用
+
+📖 **详细部署指南**: [DEPLOYMENT.md](DEPLOYMENT.md)
+
 ---
 
-### 方式一：使用 Docker Compose（推荐）
+### 构建和启动
 
 #### RTX 50 系列
 
+**Windows:**
 ```bash
-cd deploy
-docker-compose -f docker-compose-indextts-5090.yml up -d --build
+cd index-tts-adapter
+build-5090.bat
+
+cd ..\deploy
+docker-compose -f docker-compose-indextts-5090.yml up -d
+```
+
+**Linux/Mac:**
+```bash
+cd index-tts-adapter
+chmod +x build-5090.sh
+./build-5090.sh
+
+cd ../deploy
+docker-compose -f docker-compose-indextts-5090.yml up -d
 ```
 
 #### RTX 40/30 系列
 
+**Windows:**
 ```bash
-cd deploy
-docker-compose -f docker-compose-indextts.yml up -d --build
+cd index-tts-adapter
+build.bat
+
+cd ..\deploy
+docker-compose -f docker-compose-indextts.yml up -d
 ```
 
-2. **查看日志**
+**Linux/Mac:**
+```bash
+cd index-tts-adapter
+chmod +x build.sh
+./build.sh
+
+cd ../deploy
+docker-compose -f docker-compose-indextts.yml up -d
+```
+
+### 查看日志
 
 ```bash
 docker logs -f duix-avatar-tts
 ```
 
-3. **等待模型加载完成**
-
-首次启动时，会自动下载 IndexTTS-2 模型（约 2-3GB），请耐心等待。
+等待看到以下日志表示启动成功：
+```
+INFO:__main__:IndexTTS 模型初始化成功！
+INFO:     Uvicorn running on http://0.0.0.0:8080
+```
 
 ### 方式二：本地开发测试
 
