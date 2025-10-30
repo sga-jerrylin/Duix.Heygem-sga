@@ -49,7 +49,7 @@ git lfs pull
 # 下载模型（约 2-3GB）
 pip install -U "huggingface-hub[cli]"
 export HF_ENDPOINT=https://hf-mirror.com  # 国内镜像
-huggingface-cli download IndexTeam/IndexTTS-2 --local-dir=checkpoints
+python -m huggingface_hub download IndexTeam/IndexTTS-2 --local-dir=checkpoints
 ```
 
 ##### 方式 B：离线部署（推荐，适合批量部署）

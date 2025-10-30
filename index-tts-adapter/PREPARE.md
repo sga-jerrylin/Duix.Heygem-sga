@@ -29,8 +29,11 @@ export HF_ENDPOINT=https://hf-mirror.com  # Linux/Mac
 # 或
 set HF_ENDPOINT=https://hf-mirror.com     # Windows
 
-# 下载模型
-huggingface-cli download IndexTeam/IndexTTS-2 --local-dir=checkpoints
+# 下载模型（使用 Python 模块方式，避免 PATH 问题）
+python -m huggingface_hub download IndexTeam/IndexTTS-2 --local-dir=checkpoints
+
+# 如果上面的命令不工作，也可以尝试：
+# huggingface-cli download IndexTeam/IndexTTS-2 --local-dir=checkpoints
 
 # 5. 返回上级目录
 cd ..

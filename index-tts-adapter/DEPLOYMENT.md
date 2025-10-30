@@ -23,7 +23,7 @@ git lfs pull
 # 下载模型文件（约 2-3GB）
 pip install -U "huggingface-hub[cli]"
 export HF_ENDPOINT=https://hf-mirror.com  # 使用国内镜像
-huggingface-cli download IndexTeam/IndexTTS-2 --local-dir=checkpoints
+python -m huggingface_hub download IndexTeam/IndexTTS-2 --local-dir=checkpoints
 
 cd ..
 ```
@@ -184,7 +184,7 @@ services:
 cd index-tts
 pip install -U "huggingface-hub[cli]"
 export HF_ENDPOINT=https://hf-mirror.com
-huggingface-cli download IndexTeam/IndexTTS-2 --local-dir=checkpoints
+python -m huggingface_hub download IndexTeam/IndexTTS-2 --local-dir=checkpoints
 ```
 
 ### Q3: 模型下载很慢或失败
