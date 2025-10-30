@@ -1,7 +1,7 @@
 # IndexTTS Adapter Dockerfile for RTX 50 Series (5090, 5080, etc.)
 # 自动下载版本：构建时自动下载 index-tts 和模型
 
-FROM nvidia/cuda:12.6.0-cudnn-runtime-ubuntu22.04
+FROM nvidia/cuda:12.6.0-cudnn-devel-ubuntu22.04
 
 # 设置环境变量
 ENV DEBIAN_FRONTEND=noninteractive
@@ -57,9 +57,9 @@ RUN mkdir -p checkpoints && \
     echo "模型文件下载完成" && \
     cd ..
 
-# 使用 uv 安装 index-tts 依赖
+# 使用 uv 安装 index-tts 依赖（跳过 deepspeed，不是必需的）
 RUN echo "正在安装 index-tts 依赖..." && \
-    uv sync --all-extras && \
+    uv sync --no-group deepspeed && \
     echo "index-tts 依赖安装完成"
 
 # 复制适配器代码到 /code
